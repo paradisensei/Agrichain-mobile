@@ -8,7 +8,13 @@ import {
 import Camera from 'react-native-camera';
 
 export default class MyCamera extends Component {
+  static navigationOptions = {
+    title: 'Take a photo of your goods'
+  };
+
   render() {
+    // TODO: put spinner here
+
     return (
       <View style={styles.container}>
         <Camera
@@ -19,33 +25,42 @@ export default class MyCamera extends Component {
           aspect={Camera.constants.Aspect.fill}
           type={Camera.constants.Type.back}
           playSoundOnCapture={false}>
+
+          <Text style={styles.capture} onPress={this.takePicture.bind(this)}>[CAPTURE]</Text>
         </Camera>
       </View>
     );
   }
 
-  componentDidMount() {
-    // this.camera.capture()
-    //   .then(data => {
-    //     const formData = new FormData();
-    //     formData.append('file', {
-    //       uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
-    //     });
+  takePicture() {
+    // TODO: send picture to the IPFS
+    this.setState({loading: true});
+    this.getCurrentPosition();
+  }
 
-    //     fetch("http://192.168.1.8:8080/upload", {
-    //        method: 'POST',
-    //        headers: {
-    //          'Accept': 'application/json',
-    //          'Content-Type': 'multipart/form-data;'
-    //        },
-    //        body: formData,
-    //     })
-    //      .then(response => {
-    //          console.log(response);
-    //      })
-    //      .catch(err => console.log(err));
-    //   })
-    //   .catch(err => console.error(err));
+  getCurrentPosition() {
+    const { navigate } = this.props.navigation;
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        position = _getPosition(position);
+        console.log("Got initial position: ",
+                    "latitude = ", position.latitude,
+                    "longitude = ", position.longitude);
+
+        navigate('Results', {position: position});
+        this.setState({loading: false});
+      },
+      error => console.log(error),
+      { timeout: 20000, maximumAge: 1000, enableHighAccuracy: true }
+    );
+  }
+}
+
+function _getPosition(position) {
+  return {
+    latitude: position.coords.latitude,
+    longitude: position.coords.longitude
   }
 }
 
