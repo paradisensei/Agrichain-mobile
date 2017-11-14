@@ -8,6 +8,7 @@ import {
 import Camera from 'react-native-camera';
 
 import Spinner from './core/spinner';
+import Environment from '../environment/environment';
 
 export default class MyCamera extends Component {
   constructor() {
@@ -21,6 +22,7 @@ export default class MyCamera extends Component {
   };
 
   render() {
+    // TODO: make this spinner work properly
     if(this.state.loading)
       return <Spinner/>;
 
@@ -35,21 +37,28 @@ export default class MyCamera extends Component {
           type={Camera.constants.Type.back}
           playSoundOnCapture={false}>
 
-          <Text style={styles.capture} onPress={this.takePicture.bind(this)}>[CAPTURE]</Text>
+          <Text style={styles.capture} onPress={this.placeProduct.bind(this)}>[CAPTURE]</Text>
         </Camera>
       </View>
     );
   }
 
+  placeProduct() {
+    this.takePicture();
+    this.getCurrentPosition();
+  }
+
   takePicture() {
     this.camera.capture()
       .then(data => {
+        console.log("Hello!");
+
         const formData = new FormData();
         formData.append('photo', {
           uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
         });
 
-        return fetch("http://192.168.60.176:3001/upload", {
+        return fetch(Environment.PHOTO_UPLOAD_PATH, {
            method: 'POST',
            headers: {
              'Content-Type': 'multipart/form-data;'
@@ -59,6 +68,7 @@ export default class MyCamera extends Component {
       })
       .catch(err => console.log(err))
       .then(response => {
+        console.log("AGAIn");
         // TODO: take hash here...
 
         // response = JSON.parse(response._bodyText);
@@ -72,8 +82,6 @@ export default class MyCamera extends Component {
         //  });
       })
       .catch(err => console.log(err));
-
-    this.getCurrentPosition();
   }
 
   getCurrentPosition() {

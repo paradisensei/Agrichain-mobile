@@ -1,7 +1,5 @@
 const env = {
-  production: {
-    API_URL: 'http://your_ip_here:8080'
-  }
+  PHOTO_UPLOAD_PATH: 'http://your_ip_here:3001/upload'
 }
 
-export default env.production
+export default env
