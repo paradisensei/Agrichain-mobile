@@ -7,13 +7,22 @@ import {
 
 import Camera from 'react-native-camera';
 
+import Spinner from './core/spinner';
+
 export default class MyCamera extends Component {
+  constructor() {
+    super();
+
+    this.state = {loading: false};
+  }
+
   static navigationOptions = {
     title: 'Take a photo of your goods'
   };
 
   render() {
-    // TODO: put spinner here
+    if(this.state.loading)
+      return <Spinner/>;
 
     return (
       <View style={styles.container}>
@@ -44,15 +53,12 @@ export default class MyCamera extends Component {
     navigator.geolocation.getCurrentPosition(
       position => {
         position = _getPosition(position);
-        console.log("Got initial position: ",
-                    "latitude = ", position.latitude,
-                    "longitude = ", position.longitude);
 
         navigate('Results', {position: position});
         this.setState({loading: false});
       },
       error => console.log(error),
-      { timeout: 20000, maximumAge: 1000, enableHighAccuracy: true }
+      { timeout: 30000, maximumAge: 1000, enableHighAccuracy: true }
     );
   }
 }
