@@ -25,6 +25,9 @@ export default class Results extends Component<{}> {
 
     return (
       <View style={styles.container}>
+        <Text> {latitudeWhole + " " + latitudeDecimal}  </Text>
+        <Text> {longitudeWhole + " " + longitudeDecimal} </Text>
+
         <View style={{marginLeft: 20, marginRight: 20, marginTop: 40}}>
           <TouchableHighlight
             style={[styles.button]}

@@ -42,8 +42,37 @@ export default class MyCamera extends Component {
   }
 
   takePicture() {
-    // TODO: send picture to the IPFS
-    this.setState({loading: true});
+    this.camera.capture()
+      .then(data => {
+        const formData = new FormData();
+        formData.append('photo', {
+          uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
+        });
+
+        return fetch("http://192.168.60.176:3001/upload", {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'multipart/form-data;'
+           },
+           body: formData,
+        });
+      })
+      .catch(err => console.log(err))
+      .then(response => {
+        // TODO: take hash here...
+
+        // response = JSON.parse(response._bodyText);
+        // let count = 0;
+        // if (response.images) {
+        //   count = response.images[0].faces.length;
+        // }
+        // console.log(count);
+        //  this.setState({
+        //    count: count
+        //  });
+      })
+      .catch(err => console.log(err));
+
     this.getCurrentPosition();
   }
 
@@ -55,7 +84,6 @@ export default class MyCamera extends Component {
         position = _getPosition(position);
 
         navigate('Results', {position: position});
-        this.setState({loading: false});
       },
       error => console.log(error),
       { timeout: 30000, maximumAge: 1000, enableHighAccuracy: true }
