@@ -51,11 +51,9 @@ export default class MyCamera extends Component {
   takePicture() {
     this.camera.capture()
       .then(data => {
-        console.log("Hello!");
-
         const formData = new FormData();
-        formData.append('photo', {
-          uri: data.mediaUri, name: 'photo.jpg', type: 'image/jpg'
+        formData.append('file', {
+          uri: data.mediaUri, name: 'file.jpg', type: 'image/jpg'
         });
 
         return fetch(Environment.PHOTO_UPLOAD_PATH, {
@@ -68,18 +66,8 @@ export default class MyCamera extends Component {
       })
       .catch(err => console.log(err))
       .then(response => {
-        console.log("AGAIn");
-        // TODO: take hash here...
-
-        // response = JSON.parse(response._bodyText);
-        // let count = 0;
-        // if (response.images) {
-        //   count = response.images[0].faces.length;
-        // }
-        // console.log(count);
-        //  this.setState({
-        //    count: count
-        //  });
+        // TODO: getting hash
+        console.log(response["_bodyInit"]);
       })
       .catch(err => console.log(err));
   }
