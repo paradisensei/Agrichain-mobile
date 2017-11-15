@@ -3,7 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight
+  TouchableHighlight,
+  Image
 } from 'react-native';
 
 import MyCamera from './my_camera';
@@ -16,9 +17,7 @@ export default class Main extends Component<{}> {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.logo}>
-          <Text>Logo here</Text>
-        </View>
+        <Image style={styles.logo} source={require('../logo.jpg')} />
 
         <View style={{marginLeft: 20, marginRight: 20, marginTop: 20}}>
           <TouchableHighlight
@@ -47,8 +46,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   logo: {
-    alignItems: 'center',
-    marginTop: 40
+    flexGrow: 1,
+    alignSelf: 'center',
+    width: 500,
+    height: 30,
+    resizeMode: 'cover'
   },
   button: {
     alignItems: 'center',

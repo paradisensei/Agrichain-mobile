@@ -44,42 +44,36 @@ export default class MyCamera extends Component {
   }
 
   placeProduct() {
-    this.takePicture();
-    this.getCurrentPosition();
+    this.getCurrentInfo();
   }
 
-  takePicture() {
-    this.camera.capture()
-      .then(data => {
-        const formData = new FormData();
-        formData.append('file', {
-          uri: data.mediaUri, name: 'file.jpg', type: 'image/jpg'
-        });
-
-        return fetch(Environment.PHOTO_UPLOAD_PATH, {
-           method: 'POST',
-           headers: {
-             'Content-Type': 'multipart/form-data;'
-           },
-           body: formData,
-        });
-      })
-      .catch(err => console.log(err))
-      .then(response => {
-        // TODO: getting hash
-        console.log(response["_bodyInit"]);
-      })
-      .catch(err => console.log(err));
-  }
-
-  getCurrentPosition() {
+  getCurrentInfo() {
     const { navigate } = this.props.navigation;
 
     navigator.geolocation.getCurrentPosition(
       position => {
         position = _getPosition(position);
 
-        navigate('Results', {position: position});
+        this.camera.capture()
+          .then(data => {
+            const formData = new FormData();
+              formData.append('file', {
+                uri: data.mediaUri, name: 'file.jpg', type: 'image/jpg'
+              });
+
+              return fetch(Environment.PHOTO_UPLOAD_PATH, {
+                 method: 'POST',
+                 headers: {
+                   'Content-Type': 'multipart/form-data;'
+                 },
+                 body: formData,
+            });
+          })
+      .catch(err => console.log(err))
+      .then(response => {
+        navigate('Results', {position: position, imageHash: response["_bodyInit"]});
+      })
+      .catch(err => console.log(err));
       },
       error => console.log(error),
       { timeout: 30000, maximumAge: 1000, enableHighAccuracy: true }
